@@ -27,3 +27,38 @@ document.addEventListener('keydown', function (e) {
     closeModal();
   }
 });
+
+// HIGHLIGHT: Smooth Scrolling (lean more)
+const btnScrollTo = document.querySelector('.btn--scroll-to');
+const section1 = document.querySelector('#section--1');
+
+btnScrollTo.addEventListener('click', function (e) {
+  const s1cords = section1.getBoundingClientRect();
+
+  // NOTE: Element Coordinates
+  console.log(s1cords);
+  console.log(e.target.getBoundingClientRect()); // NOTE: e.target -> target is the one we clicked (btnScrollTo)
+  console.log(
+    `Current scroll (X/Y) ${window.pageXOffset}, ${window.pageYOffset}`
+  );
+  console.log(
+    `height/width viewport ${document.documentElement.clientHeight} ${document.documentElement.clientWidth}`
+  );
+
+  /* NOTE: Scrolling 
+  - Traditional Way
+  window.scrollTo(
+    s1cords.left + window.pageXOffset,
+    s1cords.top + window.pageYOffset
+  );
+  
+
+  window.scrollTo({
+    left: s1cords.left + window.pageXOffset,
+    top: s1cords.top + window.pageYOffset,
+    behavior: 'smooth',
+  });
+  */
+  // NOTE: Modern way -> ONLY support for Modern Browser
+  // section1.scrollIntoView({ behaviour: 'smooth' });
+});
