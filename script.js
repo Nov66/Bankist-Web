@@ -60,5 +60,39 @@ btnScrollTo.addEventListener('click', function (e) {
   });
   */
   // NOTE: Modern way -> ONLY support for Modern Browser
-  // section1.scrollIntoView({ behaviour: 'smooth' });
+  section1.scrollIntoView({ behavior: 'smooth' });
+});
+
+// HIGHLIGHT: Page Navigation (Event Delegation)
+
+/* NOTE: Without Event Delegation
+document.querySelectorAll('.nav__link').forEach(function (el) {
+  el.addEventListener('click', function (e) {
+    e.preventDefault();
+
+    const id = this.getAttribute('href');
+    console.log(id);
+    document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+  });
+});
+*/
+
+/* NOTE: Event Delegation
+- Attach same event handler to Multiple Elements 
+1. Add Event Listener to common parent element (nav__links) of all the element 
+2. Determine what Element Originated the event
+*/
+document.querySelector('.nav__links').addEventListener('click', function (e) {
+  console.log(e.target);
+  e.preventDefault();
+
+  // Matching Strategy (Select element that we are interested in)
+  if (
+    e.target.classList.contains('nav__link') &&
+    !e.target.classList.contains('nav__link--btn')
+  ) {
+    const id = e.target.getAttribute('href');
+    console.log(id);
+    document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+  }
 });
