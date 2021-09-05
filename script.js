@@ -96,3 +96,35 @@ document.querySelector('.nav__links').addEventListener('click', function (e) {
     document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
   }
 });
+
+// HIGHLIGHT: Tabbed Component
+const tabs = document.querySelectorAll('.operations__tab');
+const tabsContainer = document.querySelector('.operations__tab-container');
+const tabsContent = document.querySelectorAll('.operations__content');
+
+/* NOTE: Old Way (NOT desirable) 给每个tab都加事件
+tabs.forEach(t =>
+  t.addEventListener('click', () => {
+    console.log('link');
+  })
+);
+*/
+tabsContainer.addEventListener('click', function (e) {
+  // NOTE: use Closest method to ensure the button can be clicked no matter we clicked 01 or instant transfer
+  const clicked = e.target.closest('.operations__tab');
+
+  // NOTE: Modern way -> Ignore the click that is Null (Guard clause) -> If Clicked is Falsy value, the rest of code won't be executed
+  if (!clicked) return;
+
+  // NOTE: Remove Active Classes
+  tabs.forEach(t => t.classList.remove('operations__tab--active'));
+  tabsContent.forEach(c => c.classList.remove('operations__content--active'));
+
+  // NOTE: Activate Tab
+  clicked.classList.add('operations__tab--active');
+
+  // NOTE: Activate Content Area
+  document
+    .querySelector(`.operations__content--${clicked.dataset.tab}`)
+    .classList.add('operations__content--active');
+});
