@@ -128,3 +128,62 @@ tabsContainer.addEventListener('click', function (e) {
     .querySelector(`.operations__content--${clicked.dataset.tab}`)
     .classList.add('operations__content--active');
 });
+
+/* HIGHLIGHT: Menu Fade Animation
+NOTE:
+- Use Mouseover -> because MouseEnter will not Bubble Up
+- Use Event Delegation (bubble up)
+- Pair: Mouseover & Mouseout, Mouseenter, Mouseleave
+- Use contains instead of Closest method -> because there are no other child elements like tabs (have span class and div)
+- Refactor -> Pass arguments to Event Handler (handleOver)
+1. one way -> Still need a CALLBACK function (manually call)
+  nav.addEventListener('mouseover', function (e) {
+    handleOver(e, 0.5);
+  });
+
+  nav.addEventListener('mouseout', function (e) {
+    handleOver(e, 1);
+  });
+2. Another way -> Bind method
+'this' key word is equal to currentTarget (0.5, 1)
+3. Alternative way -> Use Closure
+
+const handleHover = function (o) {
+  return function (e) {
+    if (e.target.classList.contains('nav__link')) {
+      const link = e.target;
+      const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+      const logo = link.closest('.nav').querySelector('img');
+ 
+      siblings.forEach(el => {
+        if (el !== link) el.style.opacity = o;
+      });
+      logo.style.opacity = o;
+    }
+  };
+};
+you can log the handleHover(0.1) to see that it returns a function which  // has access to the argument(opacity value) passed to handleHover() due to   // closures 
+nav.addEventListener('mouseover', handleHover(0.5));
+nav.addEventListener('mouseout', handleHover(1));
+- Event Handler can ONLY have Real argument (can NOT pass arguments to Event Handler)
+- Use 'this' keyword to pass argument to Event Handler
+*/
+const handleOver = function (e) {
+  if (e.target.classList.contains('nav__link')) {
+    console.log(this); // 0.5 or 1
+    const link = e.target;
+    const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+    console.log(siblings);
+    const logo = link.closest('.nav').querySelector('img');
+
+    siblings.forEach(el => {
+      if (el !== link) el.style.opacity = this;
+    });
+    logo.style.opacity = this;
+  }
+};
+
+const nav = document.querySelector('.nav');
+// NOTE: Use Bind method -> because it still a function not value (bind returns a new function)
+nav.addEventListener('mouseover', handleOver.bind(0.5));
+nav.addEventListener('mouseout', handleOver.bind(1));
