@@ -187,3 +187,38 @@ const nav = document.querySelector('.nav');
 // NOTE: Use Bind method -> because it still a function not value (bind returns a new function)
 nav.addEventListener('mouseover', handleOver.bind(0.5));
 nav.addEventListener('mouseout', handleOver.bind(1));
+
+/* HIGHLIGHT: Sticky Navigation
+1. One way -> Using Scrolling -> NOT good practice (scroll event is always fired all the time)
+const initialCoords = section1.getBoundingClientRect();
+console.log(initialCoords.top);
+window.addEventListener('scroll', function () {
+  console.log(window.scrollY);
+  
+  window.scrollY > initialCoords.top
+  ? nav.classList.add('sticky')
+  : nav.classList.remove('sticky');
+});
+2. Use Intersection Observer API
+- Viewport -> root: Target Element
+- 10% -> threshold: Percentage of Intersection at which the Observer Callback will be called
+*/
+const header = document.querySelector('.header');
+const navHeight = nav.getBoundingClientRect().height;
+console.log(navHeight);
+
+const stickyNav = function (entries) {
+  const [entry] = entries; // Destructuring to get First element
+  console.log(entry);
+  if (!entry.isIntersecting) nav.classList.add('sticky');
+  else nav.classList.remove('sticky');
+};
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null,
+  threshold: 0,
+  rootMargin: `-${navHeight}px`,
+  /* NOTE: Visual Margin: 90 (height of Navigation) is a box with 90px that will be applied outside of Target Element
+  rootMargin: '-90px',
+  */
+});
+headerObserver.observe(header);
