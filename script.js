@@ -231,7 +231,7 @@ const allSections = document.querySelectorAll('.section');
 
 const revealSection = function (entries, observer) {
   const [entry] = entries;
-  console.log(entry);
+  // console.log(entry);
 
   // Guard Clause
   if (!entry.isIntersecting) return;
@@ -250,3 +250,30 @@ allSections.forEach(section => {
   sectionObserver.observe(section);
   section.classList.add('section--hidden');
 });
+
+/*HIGHLIGHT: Lazy Loading Images
+- Use Intersection Observer API (This one really better loading performance)
+ */
+const imgTargets = document.querySelectorAll('img[data-src]');
+console.log(imgTargets);
+
+const loadImg = function (entries, observer) {
+  const [entry] = entries; // const entry = entries[0]
+  console.log(entry);
+
+  if (!entry.isIntersecting) return;
+  // Replace src with data-src
+  entry.target.src = entry.target.dataset.src;
+  entry.target.addEventListener('load', function () {
+    entry.target.classList.remove('lazy-img');
+  });
+  observer.unobserve(entry.target);
+};
+
+const imgObserver = new IntersectionObserver(loadImg, {
+  root: null,
+  threshold: 0,
+  rootMargin: '200px', // NOTE: gives a head start on the loading, on a faster connection you wont see the blur but on slower connections you might.
+});
+
+imgTargets.forEach(imgTarget => imgObserver.observe(imgTarget));
