@@ -209,7 +209,7 @@ console.log(navHeight);
 
 const stickyNav = function (entries) {
   const [entry] = entries; // Destructuring to get First element
-  console.log(entry);
+  // console.log(entry);
   if (!entry.isIntersecting) nav.classList.add('sticky');
   else nav.classList.remove('sticky');
 };
@@ -222,3 +222,31 @@ const headerObserver = new IntersectionObserver(stickyNav, {
   */
 });
 headerObserver.observe(header);
+
+/* HIGHLIGHT: Revealing Sections
+- Using Intersection Observer API
+- CALLBACK function need Observer parameter this time to Unobserve
+*/
+const allSections = document.querySelectorAll('.section');
+
+const revealSection = function (entries, observer) {
+  const [entry] = entries;
+  console.log(entry);
+
+  // Guard Clause
+  if (!entry.isIntersecting) return;
+
+  entry.target.classList.remove('section--hidden');
+  // NOTE: Unobserve for better performance
+  observer.unobserve(entry.target);
+};
+
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.2,
+});
+
+allSections.forEach(section => {
+  sectionObserver.observe(section);
+  section.classList.add('section--hidden');
+});
